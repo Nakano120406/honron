@@ -1,0 +1,135 @@
+\documentclass[12pt]{mthesis_utf8}\usepackage{graphicx}
+\usepackage{latexsym}
+
+\newtheorem{lem}{補題}
+\newtheorem{prop}{命題}[section]
+\newtheorem{prf}{証明}
+\newtheorem{theo}{定理}
+\newtheorem{Definition}{定義}
+
+
+% タイトル
+% 自分で改行位置を指定する場合は，'\newline' を用いる
+\title{アクセス環境によるインターネット通信品質に関する研究}
+\etitle{Research on Internet Communication Quality by Access Environment}
+
+
+%\mti{○○○○に関する研究}
+% 指導教官名（敬称は『教授』が自動的に付く）
+\supervisor{高野 知佐}
+\esupervisor{Chisa Takano}
+
+% 入学年度（『20XX 年度入学』となる）
+\admdate{2023}
+
+% 学籍番号
+\regnum{2366010}
+
+% 著者名
+\author{中野 龍太朗}
+\eauthor{Ryutaro Nakano}
+
+% 提出日（『…提出』となる）
+\submission{2024 年 1月 24日}
+
+% ヘッダを付ける場合はコメントアウトする
+\usehead
+
+% ASCII-pTeX の場合はコメントアウトする
+\asciitex
+
+% ドラフト・モード
+% フローティング・オブジェクトを章末に追いやり，本文のみの
+% 文章量を数え易くする（自動計算は出来ない）．
+\draftmode
+
+\setlength{\baselineskip}{12pt}
+%\affiliate[所属ラベル]{和文勤務先\\ 連絡先住所}{英文勤務先\\ 英文連絡先住所}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+ここには，修士論文の概要を書く．（A4 1ページ程度）
+\end{abstract}
+
+\begin{eabstract}
+Write abstract of your thesis here within a page in A4 size.
+\end{eabstract}
+
+
+%%
+%%%% 1------------------------------------------------------------
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{序論}
+\section{背景と目的}
+
+
+\section{本論文の構成}
+
+%%
+%%%% 2------------------------------------------------------------
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{関連研究}
+
+\chapter{アクセス環境の影響の調査}
+\section{調査に使用するデータ}
+\section{スループットの調査}
+\section{RTTの調査}
+\section{調査のまとめ}
+
+\chapter{可視化システム}
+\section{システムの概要}
+\section{システムの評価}
+\section{まとめ}
+
+\chapter{まとめ}
+
+%\setlength{\baselineskip}{20pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{acknowledgment}
+日頃より熱心に御指導下さった本学情報科研究科の△△ △△教授，ならびに，
+本論文の細部にまで目を通し，貴重な助言を下さった□□ □□准教授と×× ××教授
+に心より感謝致します．
+
+また，御討論頂いた本学情報科学研究科○○○研究室の諸氏に感謝致します．
+\end{acknowledgment}
+
+\bibliographystyle{abbrv}
+%
+\begin{thebibliography}{99}
+\bibitem {dews2007}
+市大太郎，“論文題目”，学会名，ページ数，年．
+%
+\end{thebibliography}
+%
+\chapter*{業績リスト}
+
+\section*{学会誌発表論文}
+\begin{enumerate}
+%
+\item 市大太郎，“論文題目”，学会名，ページ数，年．
+%
+\end{enumerate}
+
+\section*{国際会議発表論文}
+\begin{enumerate}
+%
+\item 市大太郎，“論文題目”，学会名，ページ数，年．
+%
+\end{enumerate}
+
+\section*{国内研究会発表論文}
+\begin{enumerate}
+%
+\item 市大太郎，“論文題目”，学会名，ページ数，年．
+%
+\end{enumerate}
+%
+\end{document}
