@@ -1,5 +1,30 @@
-\documentclass[12pt]{mthesis_utf8}\usepackage{graphicx}
+\documentclass[12pt,dvipdfmx]{mthesis_utf8}
+\usepackage{graphicx}
 \usepackage{latexsym}
+\usepackage{multirow}
+\usepackage{cleveref}
+\usepackage{subcaption} % サブキャプション用
+\usepackage{comment} % コメントアウト用 図が多くてコンパイルに時間がかかるため
+% サブキャプションを参照したときに()で囲むコマンド
+\captionsetup[subfigure]{labelformat=simple}
+\renewcommand{\thesubfigure}{(\alph{subfigure})}
+
+% 日本語のラベルを設定
+\crefname{figure}{図}{図} % 単数形と複数形の指定
+
+% 複数参照の接続語設定
+\crefrangeformat{figure}{図#3#1#4と#5#2#6} % 範囲参照のフォーマット
+\crefmultiformat{figure}{図#2#1#3}{と#2#1#3}{, #2#1#3}{と#2#1#3} % 複数参照のフォーマット
+
+\crefname{table}{表}{表}
+% 節のカスタマイズ (番号の後ろに「節」を追加)
+\crefname{section}{\S}{\S} % セクション名の設定
+\crefformat{section}{#2#1節#3} % 出力形式をカスタマイズ
+% 章のカスタマイズ (番号の後ろに「章」を追加)
+\crefname{chapter}{\S}{\S} % 章名の設定
+\crefformat{chapter}{#2#1章#3} % 出力形式をカスタマイズ
+
+\captionsetup{justification=centering} % キャプションを中央揃えにする設定
 
 \newtheorem{lem}{補題}
 \newtheorem{prop}{命題}[section]
@@ -64,7 +89,8 @@ Write abstract of your thesis here within a page in A4 size.
 
 \chapter{序論}
 \section{背景と目的}
-
+ユーザーがネットワーク通信品質を調べるために，一般に Web ベースのスピードテストサイトが用いられる．このようなサイトは多数運用されており，計測結果を統計情報の掲載やインターネットの通信品質の分析などに活用されている．しかし，通信品質において，アクセス網の種類やインターネット接続方式などのアクセス環境が通信品質にどのように影響を与えるかについては，詳細な情報が提供されていない．
+本研究では，アクセス環境による通信品質の影響を明らかにするために，アクセス環境による通信品質の違いを調査し，IPv4 と IPv6 の比較の観点から分析する．それにより，アクセス環境の違いによる分析の意義を示す．また，通信品質の違いを可視化するシステムを開発し，アクセス環境による通信品質の違いをユーザーに直感的に理解できるようにする．
 
 \section{本論文の構成}
 
@@ -74,17 +100,15 @@ Write abstract of your thesis here within a page in A4 size.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{関連研究}
+\label{chap:relatedwork}
 
-\chapter{アクセス環境の影響の調査}
-\section{調査に使用するデータ}
-\section{スループットの調査}
-\section{RTTの調査}
-\section{調査のまとめ}
+%%
+%%%% 3------------------------------------------------------------
+%%
 
-\chapter{可視化システム}
-\section{システムの概要}
-\section{システムの評価}
-\section{まとめ}
+\input{chapter3.tex}
+
+\input{chapter4.tex}
 
 \chapter{まとめ}
 
