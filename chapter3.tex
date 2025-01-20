@@ -1,12 +1,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{アクセス環境の影響の調査}
+\label{chap:access}
 本章では，アクセス環境による通信品質の影響を調査する．アクセス環境とは，クライアントの端末からサーバーまでの経路上の回線の種別や通信方式などのことを指す．本研究では，インターネットサービスプロバイダ(ISP)の網，アクセス網の種類，インターネット接続方式の3つをアクセス環境として分類する．
 \section{調査方法}
-調査にはiNoniusスピードテストの計測ログを用いる．計測ログには\cref{loginfo}の情報が含まれている．データの計測期間は 2022 年 10 月 1 日〜 2023 年 5 月 31 日と 2023 年 6 月 1 日 〜 2024 年 6 月 31 日のログを使用した．前者の期間を(1)とし，後者の期間を(2)とする．これらのログのうち，IPv4/IPv6 デュアルスタック環境における計測結果を分析の対象とした．デュアルスタック環境からの計測の判定はuseridを基に行った．useridは計測ごとにユーザーに割り当てられる．デュアルスタック環境からの計測の場合，IPv4 と IPv6 の計測結果がそれぞれに同じuseridで記録される．シングルスタック環境からの計測の場合は，計測ログ内に同じuseridが存在しないため，それらを除外することでデュアルスタック環境の計測結果のみを抽出した．また，外れ値として計測が未完了な項目を1つでも含むデータは除外した．
+調査にはiNonius Speed Test\cite{iNonius}の計測ログを用いる．iNonius Speed Testの測はWebブラウザを利用してIPv4/IPv6デュアルスタック環境におけるインターネット通信品質を計測できるサービスである．HTTP通信による計測を実現しているLibrespeed\cite{librespeed}を利用して計測を行っている．計測区間は\cref{fig:Measurment}のようにユーザー端末から計測サイトまでの区間である．
+計測ログには\cref{tab:loginfo}の情報が含まれている．データの計測期間は 2022 年 10 月 1 日〜 2023 年 5 月 31 日と 2023 年 6 月 1 日 〜 2024 年 6 月 31 日のログを使用した．前者の期間を(1)とし，後者の期間を(2)とする．これらのログのうち，IPv4/IPv6 デュアルスタック環境における計測結果を分析の対象とした．デュアルスタック環境からの計測の判定はuseridを基に行った．useridは計測ごとにユーザーに割り当てられる．デュアルスタック環境からの計測の場合，IPv4 と IPv6 の計測結果がそれぞれに同じuseridで記録される．シングルスタック環境からの計測の場合は，計測ログ内に同じuseridが存在しないため，それらを除外することでデュアルスタック環境の計測結果のみを抽出した．また，外れ値として計測が未完了な項目を1つでも含むデータは除外した．
 
-\begin{comment}
-\begin{table}[p]
+%\begin{comment}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1.0\textwidth]{fig/Measurment.png}
+    \caption{iNonius Speed Testの計測区間}
+    \label{fig:Measurment}
+\end{figure}
+\FloatBarrier
+\begin{table}[htbp]
     \caption{iNonius スピードテストの計測ログの情報}
     \label{tab:loginfo}
     \begin{center}
@@ -33,19 +42,20 @@
         \end{tabular}
     \end{center}
 \end{table}
-\end{comment}
+\FloatBarrier
+%\end{comment}
 
 \section{アクセス環境の判定}
 \label{label:accesstype}
-アクセス環境は\cref{tab:accesstype} のように分類する．ISPの網の判定には，計測ログのispInfoを使用する．この値はiNoniusスピードテストで使用しているLiberSpeedが，計測の過程でipifo.ioに計測元のIPアドレスの情報を問い合わせて取得した情報である．IPv4/IPv6のそれぞれの計測結果に含まれるこの値を比較して判定した．
+アクセス環境は\cref{tab:accesstype} のように分類する．ISPの網の判定には，計測ログのispInfoを使用する．この値はLiberSpeedが，計測の過程でipifo.io\cite{ipinfo}に計測元のIPアドレスの情報を問い合わせて取得した情報である．IPv4/IPv6のそれぞれの計測結果に含まれるこの値を比較して判定した．
 
-アクセス網の種類の計測ログに含まれる情報だけでは判断できないため，GeoLocation Technology が提供する「どこどこ JP」を使用した．このサービスは．IPアドレスに地理情報や企業情報などを紐づけたデータベースで，今回使用したアクセス網の種類の判定なども含まれる．計測ログのIPアドレスを基に，このサービスを用いてアクセス網の種類を判定した．
+アクセス網の種類の計測ログに含まれる情報だけでは判断できないため，GeoLocation Technology が提供する「どこどこ JP」\cite{docodoco}を使用した．このサービスは．IPアドレスに地理情報や企業情報などを紐づけたデータベースで，今回使用したアクセス網の種類の判定なども含まれる．計測ログのIPアドレスを基に，このサービスを用いてアクセス網の種類を判定した．
 
 
 インターネット接続方式の判定には，先行研究で用いられているMSSの値を用いた判定方法を使用した．判定の基準は\cref{tab:mss}の通りである．この表をもとに，IPv4/IPv6のそれぞれの計測結果に含まれるMSSの値でIPoEかPPPoEかを判定し，最後に組み合わせてインターネット接続方式を判定した．
 
-\begin{comment}
-\begin{table}[p]
+%\begin{comment}
+\begin{table}[htbp]
     \caption{アクセス環境の分類}
     \label{tab:accesstype}
     \begin{center}
@@ -64,7 +74,8 @@
         \end{tabular}
     \end{center}
 \end{table}
-\begin{table}[p]
+\FloatBarrier
+\begin{table}[htbp]
     \caption{インターネット接続方式の判定とMSSの値}
     \label{tab:mss}
     \begin{center}
@@ -77,7 +88,8 @@
         \end{tabular}
     \end{center}
 \end{table}
-\end{comment}
+\FloatBarrier
+%\end{comment}
 
 \section{スループットの調査}
 \label{sec:throughput}
@@ -92,8 +104,8 @@
 (b)の場合は，IPv4/IPv6で異なるISPであることから計測サーバーへの経路が異なる可能性があり，その結果IPv4/IPv6で相関性が低くなると考えられる．
 そこで，ISPによってふるまいが異なる可能性があるのか確認するためにデータ数の多い3社に絞って分析を行う．ただし，データ数の都合上(2)の期間のみである．\cref{fig:new_isp_dl2,fig:new_isp_ul2}はそれぞれA社，B社，C社のISPの違いによるダウンロードとアップロードのスループットの比較を示す．3社ともそれぞれのIPv4/IPv6の間の相関性は高く，それぞれのヒストグラムの形も似ている．しかし異なるISP同士で比較すると，ヒストグラムのピークの現れる位置が異なることから，ISPによってふるまいが異なる可能性があることがわかる．
 
-\begin{comment}
-\begin{figure}[p]
+%\begin{comment}
+\begin{figure}[htbp]
     \begin{center}
         \begin{subfigure}[b]{0.49\textwidth}
             \centering
@@ -126,8 +138,9 @@
         \label{fig:new_isp_dl}
     \end{center}
 \end{figure}
+\FloatBarrier
 
-\begin{figure}[p]
+\begin{figure}[htbp]
     \begin{center}
         \begin{subfigure}[b]{0.49\textwidth}
             \centering
@@ -160,8 +173,9 @@
         \label{fig:new_isp_ul}
     \end{center}
 \end{figure}
+\FloatBarrier
 
-\begin{figure}[p]
+\begin{figure}[htbp]
     %\centering
     \begin{center}
         % 左側の図
@@ -217,15 +231,16 @@
         \end{minipage}
     \end{center}
 \end{figure}
-\end{comment}
+\FloatBarrier
+%\end{comment}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{アクセス網の種類によるスループットへの影響}
-次にアクセス網の種類によるスループットへの影響について述べる．\cref{fig:old_Line_dl,fig:new_Line_dl}はダウンロードのスループットのグラフ，\cref{fig:old_Line_ul,fig:new_Line_ul}はアップロードのスループットのグラフである．\cref{old_FTTH_dl,new_FTTH_dl}はそれぞれの期間でFTTHを使用した場合のダウンロードのスループットである．両者とも100Mbps付近にピークが表れて緩やかにデータ数が減っていくふるまいを見せている．これはアップロードの場合も類似する振る舞いをしている．一方，\cref{old_CATV_dl,new_CATV_dl}のCATVを使用した場合はピークが表れる位置がFTTHと異なり，ダウンロードの場合は340Mbps付近に表れる．アップロードの場合は10Mbpsにピークが表れている．CATVを使用したインターネット接続サービスについて調査すると，ダウンロードのスループットが最大340Mbps，アップロードのスループットが最大10Mbpsであると述べているサービスがいくつか確認された．このことからアクセス網の種類によってスループットの限界が異なることがわかる．さらに\cref{new_Mobile_dl,new_Mobile_ul}のMobileの場合は10Mbps付近にピークが表れている．Mobileを使用した場合のスループットの限界はFTTHやCATVに比べて低いことがわかる．ただし，\cref{old_CATV_dl,new_CATV_dl}を比較すると，340Mbpsのピークの前後のヒストグラムの振る舞いが異なる．ピークの前後のデータの割合は\cref{tab:catv}のように変化し340Mbps以上のデータが約20\%増加している．CATVによる配信サービスについて調べると，旧来使用されてきたHFC(Hybrid Fiber-Coaxial)方式や同軸方式を光ファイバーに置き換える動きが進んでおり，総務省の資料によると約80\%の事業者がFTTH方式を採用していることがわかった．このことから，アクセス網の種類だけでなくアクセス環境全体が時期によって変化していることがわかる．
-以上のことからアクセス網の種類によってスループットの限界が異なることがわかったが，その振る舞いは時期によって異なることがわかった．
+次にアクセス網の種類によるスループットへの影響について述べる．\cref{fig:old_Line_dl,fig:new_Line_dl}はダウンロードのスループットのグラフ，\cref{fig:old_Line_ul,fig:new_Line_ul}はアップロードのスループットのグラフである．\cref{old_FTTH_dl,new_FTTH_dl}はそれぞれの期間でFTTHを使用した場合のダウンロードのスループットである．両者とも100Mbps付近にピークが表れて緩やかにデータ数が減っていくふるまいを見せている．これはアップロードの場合も類似する振る舞いをしている．一方，\cref{old_CATV_dl,new_CATV_dl}のCATVを使用した場合はピークが表れる位置がFTTHと異なり，ダウンロードの場合は340Mbps付近に表れる．アップロードの場合は10Mbpsにピークが表れている．CATVを使用したインターネット接続サービスについて調査すると，ダウンロードのスループットが最大340Mbps，アップロードのスループットが最大10Mbpsであると述べているサービスがいくつか確認された．このことからアクセス網の種類によってスループットの限界が異なることがわかる．さらに\cref{new_Mobile_dl,new_Mobile_ul}のMobileの場合は10Mbps付近にピークが表れている．Mobileを使用した場合のスループットの限界はFTTHやCATVに比べて低いことがわかる．ただし，\cref{old_CATV_dl,new_CATV_dl}を比較すると，340Mbpsのピークの前後のヒストグラムの振る舞いが異なる．ピークの前後のデータの割合は\cref{tab:catv}のように変化し340Mbps以上のデータが約20\%増加している．CATVによる配信サービスについて調べると，旧来使用されてきたHFC(Hybrid Fiber-Coaxial)方式や同軸方式を光ファイバーに置き換える動き\cite{nagaoka}が進んでおり，総務省の資料\cite{catv}によると約80\%の事業者がFTTH方式を採用していることがわかった．このことから，アクセス網の種類だけでなくアクセス環境全体が時期によって変化していることがわかる．
+以上のことからアクセス網の種類によってスループットの限界が異なることがわかったが，その振る舞いは時期によって異なることがわかる．
 
-\begin{comment}
-\begin{figure}[p]
+%\begin{comment}
+\begin{figure}[htbp]
     %\centering
     \begin{center}
         % 左側の図
@@ -278,8 +293,9 @@
         \end{minipage}
     \end{center}
 \end{figure}
+\FloatBarrier
 
-\begin{figure}[p]
+\begin{figure}[htbp]
     %\centering
     \begin{center}
         % 左側の図
@@ -332,8 +348,9 @@
         \end{minipage}
     \end{center}
 \end{figure}
+\FloatBarrier
 
-\begin{table}[p]
+\begin{table}[htbp]
     \caption{CATVのピーク前後のデータの割合}
     \label{tab:catv}
     \begin{center}
@@ -344,33 +361,34 @@
         \end{tabular}
     \end{center}
 \end{table}
-\end{comment}
+\FloatBarrier
+%\end{comment}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{インターネット接続方式によるスループットへの影響}
-最後にインターネット接続方式によるスループットへの影響について述べる．\cref{fig:old_connect_dl,fig:new_connect_dl}はそれぞれの期間のダウンロードのスループットのグラフ，\cref{fig:old_connect_ul,fig:new_connect_ul}はアップロードのスループットのグラフである．\subref{old_IPv4aaS_dl}から\subref{old_PPPoE_dl}の平均値を比較するとIPv4とIPv6の両者とも異なる値を示している．ここで\subref{old_IPv4aaS_dl}と\subref{old_mix_dl}の条件の違いはIPv4の接続方式であるにも関わらず，IPv6のスループットの平均値も異なる．同様に\subref{old_mix_dl}と\subref{old_PPPoE_dl}の条件の違いはIPv6の接続方式であるにも関わらず，IPv4のスループットの平均値も異なる．このことからインターネットの接続方式による振る舞いの違いが表れるだけでなく，IPv4/IPv6の接続方式の組み合わせによっても振る舞いが異なることがわかる．
+最後にインターネット接続方式によるスループットへの影響について述べる．\cref{fig:old_connect_dl,fig:new_connect_dl}はそれぞれの期間のダウンロードのスループットのグラフ，\cref{fig:old_connect_ul,fig:new_connect_ul}はアップロードのスループットのグラフである．\subref{old_IPv4aaS_dl}から\subref{old_PPPoE_dl}の平均値を比較するとIPv4とIPv6の両者とも異なる値を示している．ここで\subref{old_IPv4aaS_dl}と\subref{old_mix_dl}の条件の違いはIPv4の接続方式であるにも関わらず，IPv6のスループットの平均値も異なる．同様に\subref{old_mix_dl}と\subref{old_PPPoE_dl}の条件の違いはIPv6の接続方式であるにも関わらず，IPv4のスループットの平均値も異なる．このことからインターネットの接続方式による振る舞いの違いが表れるだけでなく，IPv4/IPv6の接続方式の組み合わせによっても振る舞いが異なることがわかる．しかし，この影響の要因は他にも検証が必要であると考える．
 
-\begin{comment}
-\begin{figure}[p]
+%\begin{comment}
+\begin{figure}[htbp]
     %\centering
     \begin{center}
         % 左側の図
         \begin{minipage}[t]{0.48\textwidth}
             \begin{subfigure}[b]{\textwidth}
                 \centering
-                \includegraphics[width=0.85\textwidth]{fig/old_IPv4aaS_dl.png}
+                \includegraphics[width=0.8\textwidth]{fig/old_IPv4aaS_dl.png}
                 \subcaption{IPv4/IPv6でIPoEを使用した場合}
                 \label{old_IPv4aaS_dl}
             \end{subfigure}
             \begin{subfigure}[b]{\textwidth}
                 \centering
-                \includegraphics[width=0.85\textwidth]{fig/old_mix_dl.png}
+                \includegraphics[width=0.8\textwidth]{fig/old_mix_dl.png}
                 \subcaption{IPv4はPPPoE，IPv6はIPoEを\\使用した場合}
                 \label{old_mix_dl}
             \end{subfigure}
             \begin{subfigure}[b]{\textwidth}
                 \centering
-                \includegraphics[width=0.85\textwidth]{fig/old_PPPoE_dl.png}
+                \includegraphics[width=0.8\textwidth]{fig/old_PPPoE_dl.png}
                 \subcaption{IPv4/IPv6でPPPoEを使用した場合}
                 \label{old_PPPoE_dl}
             \end{subfigure}
@@ -381,19 +399,19 @@
         \begin{minipage}[t]{0.48\textwidth}
             \begin{subfigure}[b]{\textwidth}
                 \centering
-                \includegraphics[width=0.85\textwidth]{fig/new_IPv4aaS_dl.png}
+                \includegraphics[width=0.8\textwidth]{fig/new_IPv4aaS_dl.png}
                 \subcaption{IPv4/IPv6でIPoEを使用した場合}
                 \label{new_IPv4aaS_dl}
             \end{subfigure}
             \begin{subfigure}[b]{\textwidth}
                 \centering
-                \includegraphics[width=0.85\textwidth]{fig/new_mix_dl.png}
+                \includegraphics[width=0.8\textwidth]{fig/new_mix_dl.png}
                 \subcaption{IPv4はPPPoE，IPv6はIPoEを使用した場合}
                 \label{new_mix_dl}
             \end{subfigure}
             \begin{subfigure}[b]{\textwidth}
                 \centering
-                \includegraphics[width=0.85\textwidth]{fig/new_PPPoE_dl.png}
+                \includegraphics[width=0.8\textwidth]{fig/new_PPPoE_dl.png}
                 \subcaption{IPv4/IPv6でPPPoEを使用した場合}
                 \label{new_PPPoE_dl}
             \end{subfigure}
@@ -402,8 +420,9 @@
         \end{minipage}
     \end{center}
 \end{figure}
+\FloatBarrier
 
-\begin{figure}[p]
+\begin{figure}[htbp]
     %\centering
     \begin{center}
         % 左側の図
@@ -411,19 +430,19 @@
             \begin{center}
                 \begin{subfigure}[b]{\textwidth}
                     \centering
-                    \includegraphics[width=0.85\textwidth]{fig/old_IPv4aaS_ul.png}
+                    \includegraphics[width=0.8\textwidth]{fig/old_IPv4aaS_ul.png}
                     \subcaption{IPv4/IPv6でIPoEを使用した場合}
                     \label{old_IPv4aaS_ul}
                 \end{subfigure}
                 \begin{subfigure}[b]{\textwidth}
                     \centering
-                    \includegraphics[width=0.85\textwidth]{fig/old_mix_ul.png}
+                    \includegraphics[width=0.8\textwidth]{fig/old_mix_ul.png}
                     \subcaption{IPv4はPPPoE，IPv6はIPoEを使用した場合}
                     \label{old_mix_ul}
                 \end{subfigure}
                 \begin{subfigure}[b]{\textwidth}
                     \centering
-                    \includegraphics[width=0.85\textwidth]{fig/old_PPPoE_ul.png}
+                    \includegraphics[width=0.8\textwidth]{fig/old_PPPoE_ul.png}
                     \subcaption{IPv4/IPv6でPPPoEを使用した場合}
                     \label{old_PPPoE_ul}
                 \end{subfigure}
@@ -435,19 +454,19 @@
         \begin{minipage}[t]{0.48\textwidth}
             \begin{subfigure}[b]{\textwidth}
                 \centering
-                \includegraphics[width=0.85\textwidth]{fig/new_IPv4aaS_ul.png}
+                \includegraphics[width=0.8\textwidth]{fig/new_IPv4aaS_ul.png}
                 \subcaption{IPv4/IPv6でIPoEを使用した場合}
                 \label{new_IPv4aaS_ul}
             \end{subfigure}
             \begin{subfigure}[b]{\textwidth}
                 \centering
-                \includegraphics[width=0.85\textwidth]{fig/new_mix_ul.png}
+                \includegraphics[width=0.8\textwidth]{fig/new_mix_ul.png}
                 \subcaption{IPv4はPPPoE，IPv6はIPoEを使用した場合}
                 \label{new_mix_ul}
             \end{subfigure}
             \begin{subfigure}[b]{\textwidth}
                 \centering
-                \includegraphics[width=0.85\textwidth]{fig/new_PPPoE_ul.png}
+                \includegraphics[width=0.8\textwidth]{fig/new_PPPoE_ul.png}
                 \subcaption{IPv4/IPv6でPPPoEを使用した場合}
                 \label{new_PPPoE_ul}
             \end{subfigure}
@@ -456,7 +475,8 @@
         \end{minipage}
     \end{center}
 \end{figure}
-\end{comment}
+\FloatBarrier
+%\end{comment}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{RTTの調査}
@@ -465,8 +485,17 @@
 \subsection{ISPの網によるRTTへの影響}
 \cref{fig:old_isp_rtt,fig:new_isp_rtt}はそれぞれの期間のISPの網の違いによるRTTの比較を示す．\cref{old_sameISP_rtt,new_sameISP_rtt}は同じISPを使用した場合の結果で，\cref{old_diffISP_rtt,new_diffISP_rtt}は異なるISPを使用した場合の結果である．これらの間に振る舞いの違いは見られないことがわかった．
 
-\begin{comment}
-\begin{figure}[p]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{アクセス網の種類によるRTTへの影響}
+\cref{fig:old_Line_rtt,fig:new_Line_rtt}はそれぞれの期間のアクセス網の種類によるRTTの比較を示す．\cref{old_FTTH_rtt,new_FTTH_rtt}がFTTHを使用した場合，\cref{old_CATV_rtt,new_CATV_rtt}はCATVを使用した場合，\cref{old_Mobile_rtt,new_Mobile_rtt}はMobileを使用した場合の結果である．FTTHとCATVを使用した場合のRTTはほぼ同じ振る舞いをしていると言える．一方，Mobileを使用した場合のRTTはFTTHやCATVに比べてRTTの平均値が大きい．平均値だけでなく，散布図の分布やヒストグラムのピークの場所からわかる．
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{インターネット接続方式によるRTTへの影響}
+\cref{fig:old_connect_rtt,fig:new_connect_rtt}はそれぞれの期間のインターネット接続方式によるRTTの比較を示す．\cref{old_IPv4aaS_rtt,new_IPv4aaS_rtt}はIPv4/IPv6でIPoEを使用した場合，\cref{old_mix_rtt,new_mix_rtt}はIPv4はPPPoE，IPv6はIPoEを使用した場合，\cref{old_PPPoE_rtt,new_PPPoE_rtt}はIPv4/IPv6でPPPoEを使用した場合の結果である．これらの間も振る舞いの違いは見られないことがわかった．
+
+%\begin{comment}
+\begin{figure}[htbp]
     \begin{center}
         \begin{subfigure}[b]{0.49\textwidth}
             \centering
@@ -499,14 +528,11 @@
         \label{fig:new_isp_rtt}
     \end{center}
 \end{figure}
-\end{comment}
+\FloatBarrier
+%\end{comment}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{アクセス網の種類によるRTTへの影響}
-\cref{fig:old_Line_rtt,fig:new_Line_rtt}はそれぞれの期間のアクセス網の種類によるRTTの比較を示す．\cref{old_FTTH_rtt,new_FTTH_rtt}がFTTHを使用した場合，\cref{old_CATV_rtt,new_CATV_rtt}はCATVを使用した場合，\cref{old_Mobile_rtt,new_Mobile_rtt}はMobileを使用した場合の結果である．FTTHとCATVを使用した場合のRTTはほぼ同じ振る舞いをしていると言える．一方，Mobileを使用した場合のRTTはFTTHやCATVに比べてRTTの平均値が大きい．平均値だけでなく，散布図の分布やヒストグラムのピークの場所からわかる．
-
-\begin{comment}
-\begin{figure}[p]
+%\begin{comment}
+\begin{figure}[htbp]
     %\centering
     \begin{center}
         % 左側の図
@@ -559,13 +585,10 @@
         \end{minipage}
     \end{center}
 \end{figure}
-\end{comment}
+\FloatBarrier
+%\end{comment}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{インターネット接続方式によるRTTへの影響}
-\cref{fig:old_connect_rtt,fig:new_connect_rtt}はそれぞれの期間のインターネット接続方式によるRTTの比較を示す．\cref{old_IPv4aaS_rtt,new_IPv4aaS_rtt}はIPv4/IPv6でIPoEを使用した場合，\cref{old_mix_rtt,new_mix_rtt}はIPv4はPPPoE，IPv6はIPoEを使用した場合，\cref{old_PPPoE_rtt,new_PPPoE_rtt}はIPv4/IPv6でPPPoEを使用した場合の結果である．これらの間も振る舞いの違いは見られないことがわかった．
-
-\begin{comment}
+%\begin{comment}
 \begin{figure}
     %\centering
     \begin{center}
@@ -617,9 +640,12 @@
         \end{minipage}
     \end{center}
 \end{figure}
-\end{comment}
+\FloatBarrier
+%\end{comment}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{調査のまとめ}
-本章ではアクセス環境による通信品質への影響を調査した．スループットにはアクセス環境によって異なる振る舞いが見られた．またCATVのように時期によって振る舞いが変化することがあるとわかったことから，引き続き調査をする必要があることがわかった．一方，RTTについてはアクセス環境による振る舞いの違いはほとんど見られなかった．しかし，スループットと同様に影響が変化する可能性も考えられるため，引き続き調査する必要があると考える．
-スピードテストサイトの計測ログを使用して通信品質の分析をするとき，対象とアクセス環境を定めてグループ分けをしてから分析を行うことが重要であることがわかった．特にスループットについてはアクセス環境によって振る舞いが異なるため，重要である．RTTについてはMobileか否かで振る舞いが異なるため考慮する必要があり，他の要素についても慎重に判断する必要があると考える．
+本章ではアクセス環境による通信品質への影響を調査した．スループットにはアクセス環境によって異なる振る舞いが見られた．ISP網内の通信環境や，アクセス網の種類の限界，インターネット接続方式の組み合わせの違いなどさまざまな要因でスループットに影響があるため，分析時には慎重な判断が必要である．CATVのように時期によって振る舞いが変化場合や，インターネット接続方式の違いのように他の要因も考えられる場合もあることから，引き続き調査をする必要があることがわかった．
+一方，RTTについてはアクセス環境による振る舞いの違いはほとんど見られなかった．RTTはアクセス環境の種類よりも，地域による影響が大きいと予想される．先行研究\cite{nasu}では物理的距離だけでなくISP内のトポロジーやISP間の経路による影響が確認されている．これらの要因がスピードテストサイトの計測ログにも同様の傾向が見られるか調査するために，計測ログに付与する情報を増やし新たなアクセス環境を定義して調査する必要がある．
+
+これらの結果から，スピードテストサイトの計測ログを使用して通信品質の分析をするとき，対象とアクセス環境のデータを抽出してから分析を行うことが重要であることがわかった．
