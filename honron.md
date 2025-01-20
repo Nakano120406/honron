@@ -1,4 +1,16 @@
 # 概要
+さまざまなデジタルサービスが普及ことによってユーザーがインターネットを利用する機会が増えている．それに伴ってインターネット通信の通信品質が重要になっている．通信品質の悪い状態ではサービスを満足に利用することができないため，通信品質の状態を知ることはユーザーにとって重要である．インターネットの通信品質を調査するためには，Web ベースのスピードテストサイトが利用されることが一般的であり，多くのサイトが運用されている．しかし，このようなサイトで得られた計測結果が，アクセス網の種類やインターネット接続方式などのアクセス環境の内の何によって影響を受けたかを推測することはユーザーにとって難しい．その原因として，アクセス環境による通信品質への影響について情報が提供されていないことが挙げられる．また，この問題はスピードテストサイトの計測ログを使用してインターネットの通信品質についての調査にも影響を与える．多数のユーザーの計測ログを利用するため，様々なアクセス環境が混在したデータを使用することになる．そのうちアクセス環境によって外れ値のような振る舞いをするとき，インターネットの品質とは言い難い．通信品質に影響を与えるアクセス環境とその影響の現れ方を明らかにすることで，通信品質の評価を行うときに考慮するべき要素を示すことができ，ユーザーにとって通信品質の評価が容易になるほか，インターネットの通信品質の分析にも貢献することが期待される．
+本研究では，アクセス環境による通信品質の影響を明らかにするために，実際のスピードテストサイトの計測ログを使用して調査を行った．アップロードとダウンロードのスループットとラウンドトリップタイム（RTT）に着目して，アクセス環境による影響を調査し，IPv4 と IPv6 の比較の観点から分析する．さらに，分析の結果を用いて，アクセス環境毎の統計情報をユーザーに示す可視化システムを開発と実装をした．
+分析の結果，インターネットサービスプロバイダ（ISP）の違いやアクセス網の種類，IPv4/IPv6のインターネット接続方式の組み合わせの違いによって散布図や平均値などの振る舞いが異なることがわかり，アクセス環境による通信品質への影響を示した．また，可視化システムを利用したユーザーに実施したアンケートでは，アクセス環境毎の統計情報を可視化することに対する肯定的な意見を得ることができた．
+
+## 英文
+The proliferation of various digital services has increased opportunities for users to utilize the internet. Consequently, the quality of internet communication has become a critical factor. Poor communication quality prevents users from fully enjoying services, making it essential for them to understand the state of communication quality. Web-based speed test sites are commonly used to evaluate internet communication quality, and many such sites are operational. However, it is difficult for users to infer which aspects of their access environment—such as the type of access network or internet connection method—affect the measurement results obtained from these sites.
+
+One reason for this difficulty is the lack of information provided about the impact of access environments on communication quality. This issue also affects research on internet communication quality that uses measurement logs from speed test sites. Since measurement logs from numerous users are utilized, data containing diverse access environments are inevitably included. If access environments result in outlier-like behavior, these data points cannot be considered representative of internet quality. By identifying the factors in the access environment that affect communication quality and how they manifest, it is possible to highlight elements that should be considered when evaluating communication quality. This can make quality assessments easier for users and contribute to a more accurate analysis of internet communication quality.
+
+In this study, we investigated the impact of access environments on communication quality by analyzing actual measurement logs from a speed test site. We focused on upload and download throughput as well as round-trip time (RTT) to examine the influence of access environments and analyzed the results from the perspective of comparing IPv4 and IPv6. Additionally, we developed and implemented a visualization system that presents statistical information for each access environment based on the analysis results.
+
+The analysis revealed that differences in internet service providers (ISPs), types of access networks, and combinations of IPv4/IPv6 connection methods result in variations in scatter plots and average values, demonstrating the influence of access environments on communication quality. Furthermore, a survey conducted with users who utilized the visualization system showed positive feedback regarding the visualization of statistical information for each access environment.
 
 # 序論
 ## 背景と目的
@@ -10,7 +22,7 @@
 一般にユーザーがインターネット通信品質を調査する方法に，Web ベースの計測サイトを利用するのが挙げられる．代表的な例として，Netflix が提供する1，Google が提供する Speedtest などが広く使われており，これらのサイトではスループットや通信遅延，パケットロス率などの計測が行われる．みんなのネット回線速度 [3] では都道府県やプロバイダ毎のスループットと遅延，遅延の揺らぎの平均値やランキングが掲載され，他のユーザーの計測結果と比較することができる．これらのようなスピードテストの計測ログを利用してインターネットの品質の調査や評価に関する研究もされている．[4] では，iNonius Speed Test[5] の全てのユーザーの計測ログを用いて，国内のインターネット通信の品質を IPv4 と IPv6 の両者で比較し，IPv6 の利用が増加する中での品質の変化を調査している．また，[6] では，一人のユーザーによる iNonius Speed Test の計測結果を用いて，通信品質について考察する手法を提案されている．
 ほかにも，各 IX が通過するトラフィックを基に統計情報を提供 [8] したり，総務省が日本の IX の協力のもと固定系ブロードバンドサービスで交換されているトラフィック量の推定値を公表している [7] など，インターネットの通信品質に関する調査や評価は様々な視点から行われている．
 ## Network Information API
-サーバー側でユーザーのアクセス環境を取得する方法は少ない．1 つの方法としてNetwork Information API がある．これは Javascript を使用して Web ブラウザがネットワーク接続に関する情報を取得するための API である．取得できる情報は表 2.1 の通りである．接続タイプは，Wi-Fi，セルラー，イーサネット，その他の接続タイプだけでなく，そのバージョンも取得することができる．また，スループットと RTT の計測を行い，それらの結果から推定される接続タイプを取得することもできる．本研究でこの API を使用したアクセス環境の推定に使える可能性がある．しかし，この API を使用した推定の精度に関する調査が行われていないため未知数であることから，本研究では使用していない．この API の有効性が示されれば，今後の研究で活用できる可能性がある．
+サーバー側でユーザーのアクセス環境を取得する方法は少ない．1 つの方法としてNetwork Information API[17] がある．これは Javascript を使用して Web ブラウザがネットワーク接続に関する情報を取得するための API である．取得できる情報は表 2.1 の通りである．接続タイプは，Wi-Fi，セルラー，イーサネット，その他の接続タイプだけでなく，そのバージョンも取得することができる．また，スループットと RTT の計測を行い，それらの結果から推定される接続タイプを取得することもできる．本研究でこの API を使用したアクセス環境の推定に使える可能性がある．しかし，この API を使用した推定の精度に関する調査が行われていないため未知数であることから，本研究では使用していない．この API の有効性が示されれば，今後の研究で活用できる可能性がある．
 # アクセス環境の影響の調査
 本章では，アクセス環境による通信品質の影響を調査する．アクセス環境とは，クライアントの端末からサーバーまでの経路上の回線の種別や通信方式などのことを指す．本研究では，インターネットサービスプロバイダ (ISP) の網，アクセス網の種類，インターネット接続方式の 3 つをアクセス環境として分類する．
 ## 調査方法
@@ -66,3 +78,4 @@ Radish Network Speed Testing は計測ログの統計を四半期ごとに公開
 ## まとめ
 本研究では，アクセス環境によるインターネット通信品質の影響を明らかにするために，異なるアクセス環境における通信品質の計測を行い，IPv4 と IPv6 の比較を行った．スループットはアクセス環境による影響が確認されただけでなく，時期によってその影響のふるまいが変わる可能性があることがわかった．また RTT はスループットに比べてアクセス環境による影響が小さいが，特定のアクセス環境によって RTT の平均値や分布する位置がが高い値を示すことがわかった．これらの影響に対してスピードテストサイトの計測ログを使用した分析では，対象とするアクセス環境を定めることで，アクセス環境の影響を排除した通信品質の評価が可能であることが示された．また，通信品質の違いを視覚的に表現するためのシステムを設計・実装した．
 ## 今後の展望
+アクセス環境による通信品質への影響の調査の今後の展望は，以下のように考えられる．可視化システムのアンケートで得られたユーザーの望むアクセス環境について調査をすることが挙げられる．また，可視化システムは，ユーザーがアクセス環境による通信品質の違いを理解するための情報を提供することができるようにデータの提供方法の改善が必要であると考える．

@@ -19,7 +19,8 @@
 \typeout{Style file for master thesis of Hiroshima City Univ.}
 \typeout{1999-2000 Sasaki}
 
-\input jreport.cls
+%\input jreport.cls
+\LoadClass{jreport}
 
 %%%
 %%% Page style, size, etc

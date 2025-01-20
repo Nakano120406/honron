@@ -6,7 +6,7 @@
 \subsection{システムの構成}
 \cref{fig:system_image} にシステム構成を示す．システムは，iNonius統計情報可視化システムサーバーとiNonius Speed Testサーバー，クライアント端末から構成される．iNonius統計情報可視化システムサーバーには，Webサーバーコンテナと画像生成コンテナ，データ処理コンテナ，可視化システム用DBが存在する．データ処理コンテナはiNonius スピードテストサーバーから毎月の計測ログを取得し，アクセス環境ごとに最大値，最小値，中央値，四分位範囲，平均値からなる統計情報を算出し，統計量記録用テーブルに保存する．統計量記録用テーブルから 1 年分の統計量を取得して，表示用の画像を作成して，グラフ画像記録用テーブルにバイナリデータとして保存する．クライアントからのアクセス環境ごとの集計結果の要求を Web サーバーコンテナを受け取ると画像生成コンテナを経由して，グラフ画像記録用テーブルからバイナリデータを取得後，要求に対応する 1 年分の集計結果のグラフを画像（JPEG） ファイルとしてクライアントに返す．\cref{fig:system_v6_catv_dl}はアクセス回線が CATV の場合の IPv6 のダウンロードスループットのグラフである．可視化サイトにはアクセス環境ごとに IPv4 と IPv6，ダウンロードとアップロードのスループットをそれぞれ示す 4 つのグラフが表示される．
 
-%%\begin{comment}
+%\begin{comment}
 \begin{figure}[htbp]
     \centering
     \vspace{40pt} % Adjust the space between the figures
@@ -20,13 +20,13 @@
     \vspace{40pt} % Adjust the space between the figures
 \end{figure}
 \FloatBarrier
-%%\end{comment}
+%\end{comment}
 
 \subsection{データ処理コンテナ}
 データ処理コンテナ内で実行されるデータ処理とグラフ画像の作成フローを\cref{fig:graph_flow}に示す．iNonius Speed Testのデータベースから毎月の計測ログを取得し，前処理として外れ値を含む計測ログを除外する．このとき，外れ値として除外されるのは欠損値を含むデータとスループットの計測結果が小数第2位まで0を記録するデータである．欠損値を含むデータは統計情報を算出するときに，エラーの原因になるため除外する．スループットの計測結果が小数第2位まで0を記録するデータは計測が完了していない不完全なデータと推定されるため，異常値として除外している．アクセス環境の分類は，\cref{label:accesstype}と同様の手法を用いて分類している．アクセス環境ごとに最大値，最小値，中央値，四分位範囲，平均値からなる統計情報を算出し統計量記録用テーブルを更新する．統計量記録用テーブルには，アクセス環境の種類とデータの期間，アップロードとダウロードの判定フラグ，IPv4/IPv6の判定フラグ，統計情報が記録される．統計量記録用テーブルから 1 年分の統計量を取得して\cref{fig:system_v6_catv_dl}のような表示用のグラフ画像を作成する．グラフには箱ひげ図を用いている．箱ひげ図を用いることで，計測ログの分布を可視化できることを目的としている．また，総務省が発表している通信品質の調査に関するガイドライン\cite{mobile_guideline}\cite{bb_guideline}でも採用されており，通信品質を可視化するのに適していると考えられる．画像のバイナリデータをグラフ画像記録用テーブルにアクセス環境の種類とデータの期間，アップロードとダウロードの判定フラグ，IPv4/IPv6の判定フラグとともに保存する．
 一連の処理を月次で実行しているため，毎月の計測ログから統計情報を算出し，グラフ画像を作成している．
 
-%%\begin{comment}
+%\begin{comment}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{fig/graph_flow.png}
@@ -34,13 +34,13 @@
     \label{fig:graph_flow}
 \end{figure}
 \FloatBarrier
-%%\end{comment}
+%\end{comment}
 
 \subsection{画像生成コンテナ}
 画像生成コンテナはクライアントからのアクセス環境ごとの集計結果の要求を受け取り，グラフ画像記録用テーブルからバイナリデータを取得して，要求に対応する 1 年分の集計結果のグラフを画像（JPEG）ファイルとしてクライアントに返すコンテナである．Webサーバーコンテナと画像生成コンテナの処理フローをそれぞれ\cref{fig:web_flow}，\cref{fig:fig_flow}に，シーケンス図を\cref{fig:sequence}に示す．
 Webサーバーコンテナはクライアントからのリクエストを受け取り，画像生成コンテナにアクセス環境に基づいたグラフ画像の生成をリクエストする．画像生成コンテナはグラフ画像記録用テーブルから必要なデータを取得し，グラフ画像を生成して一時ファイルとしてホスト上に保存する．その後，Webサーバーコンテナに一時ファイルのアドレスを返し，Webサーバーコンテナはクライアントにグラフ画像を表示する．
 
-%%\begin{comment}
+%\begin{comment}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.6\textwidth]{fig/web_flow.png}
@@ -48,9 +48,9 @@ Webサーバーコンテナはクライアントからのリクエストを受�
     \label{fig:web_flow}
 \end{figure}
 \FloatBarrier
-%%\end{comment}
+%\end{comment}
 
-%%\begin{comment}
+%\begin{comment}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=1.0\textwidth]{fig/fig_flow.png}
@@ -58,9 +58,9 @@ Webサーバーコンテナはクライアントからのリクエストを受�
     \label{fig:fig_flow}
 \end{figure}
 \FloatBarrier
-%%\end{comment}
+%\end{comment}
 
-%%\begin{comment}
+%\begin{comment}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=1.0\textwidth]{fig/sequence.png}
@@ -68,7 +68,7 @@ Webサーバーコンテナはクライアントからのリクエストを受�
     \label{fig:sequence}
 \end{figure}
 \FloatBarrier
-%%\end{comment}
+%\end{comment}
 
 \subsection{開発環境}
 開発システムのホストの開発環境を\cref{tab:host}に，Webサーバーコンテナの開発環境を\cref{tab:webserver}に，画像生成コンテナの開発環境を\cref{tab:image}に，データ処理コンテナの開発環境を\cref{tab:dataprocessing}に，データベースコンテナの開発環境を\cref{tab:database}に示す．
@@ -247,7 +247,7 @@ Q5の回答から統計情報を可視化することは多くのユーザーが
 
 Q7のグラフの表現についても肯定的な意見が全体の約70\%である．Q7で「あまりそう思わない」「そう思わない」と回答したユーザーにQ8でなぜそう思ったかを自由記述で尋ねた．グラフのスケールの調整ができず比較が難しい，データの分布に関する情報が欲しい，という意見が挙がっている．本システムではグラフは画像で表示しているため，ユーザーはインタラクティブにグラフを操作することができず，比較が難しい．\cref{fig:bad_boxplot}に箱ひげ図の例を示す．この図はFTTH回線のダウンロード速度の箱ひげ図である．この図の，2023-12と2024-01の箱ひげ図は最小値と中央値，第1四分位数が重なっているように見えるため，比較することが難しい場合が考えられる．データの分布に関しては，箱ひげ図は第1四分位数，中央値，第3四分位数，最小値，最大値を表現しているため，データの分布に関する情報が得られると考えていたが，箱ひげ図はデータの分布を正確に表現することが難しい．スループットの計測結果は正規分布ではないため，データのボリューム層がどこにあるかを知るためには他の情報も必要である．今後はユーザーがインタラクティブにグラフを操作できるようにすることで，比較が容易になるようにする必要がある．また，データの分布に関する情報を示すために他のグラフを併用することで，データの分布に関する情報を得やすくする必要がある．これらを実現すること，アクセス環境の違いをよりわかりやすく示すことが今後の課題である．
 
-%%\begin{comment}
+%\begin{comment}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=1.0\textwidth]{fig/Q5.png}
@@ -267,9 +267,9 @@ Q7のグラフの表現についても肯定的な意見が全体の約70\%で�
     \label{fig:Q7}
 \end{figure}
 \FloatBarrier
-%%\end{comment}
+%\end{comment}
 
-%%\begin{comment}
+%\begin{comment}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=1.0\textwidth]{fig/system_v6_ftth_dl.jpg}
@@ -277,7 +277,7 @@ Q7のグラフの表現についても肯定的な意見が全体の約70\%で�
     \label{fig:bad_boxplot}
 \end{figure}
 \FloatBarrier
-%%\end{comment}
+%\end{comment}
 
 \subsection{類似するサービスとの比較}
 スピードテストサイトは多く運用されており，その中には統計情報を提供しているサイトとして，みんなのネット回線速度\cite{minsoku}とRadish Network Speed Testing\cite{radish}が挙げられる．これらのサイトと本システムを比較して評価する．

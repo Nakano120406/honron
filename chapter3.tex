@@ -2,10 +2,27 @@
 
 \chapter{アクセス環境の影響の調査}
 \label{chap:access}
-本章では，アクセス環境による通信品質の影響を調査する．アクセス環境とは，クライアントの端末からサーバーまでの経路上の回線の種別や通信方式などのことを指す．本研究では，インターネットサービスプロバイダ(ISP)の網，アクセス網の種類，インターネット接続方式の3つをアクセス環境として分類する．
+本章では，アクセス環境による通信品質の影響を調査する．アクセス環境とは，クライアントの端末からサーバーまでの経路上の回線の種別や通信方式などのことを指す．
+%本研究では，インターネットサービスプロバイダ(ISP)の網，アクセス網の種類，インターネット接続方式の3つをアクセス環境として分類する．
+本研究では，以下の３つのアクセス環境を対象とする．
+\begin{itemize}
+\item インターネットサービスプロバイダ(ISP)の網
+\item アクセス網の種類
+\item インターネット接続方式
+\end{itemize}
+
 \section{調査方法}
 調査にはiNonius Speed Test\cite{iNonius}の計測ログを用いる．iNonius Speed Testの測はWebブラウザを利用してIPv4/IPv6デュアルスタック環境におけるインターネット通信品質を計測できるサービスである．HTTP通信による計測を実現しているLibrespeed\cite{librespeed}を利用して計測を行っている．計測区間は\cref{fig:Measurment}のようにユーザー端末から計測サイトまでの区間である．
-計測ログには\cref{tab:loginfo}の情報が含まれている．データの計測期間は 2022 年 10 月 1 日〜 2023 年 5 月 31 日と 2023 年 6 月 1 日 〜 2024 年 6 月 31 日のログを使用した．前者の期間を(1)とし，後者の期間を(2)とする．これらのログのうち，IPv4/IPv6 デュアルスタック環境における計測結果を分析の対象とした．デュアルスタック環境からの計測の判定はuseridを基に行った．useridは計測ごとにユーザーに割り当てられる．デュアルスタック環境からの計測の場合，IPv4 と IPv6 の計測結果がそれぞれに同じuseridで記録される．シングルスタック環境からの計測の場合は，計測ログ内に同じuseridが存在しないため，それらを除外することでデュアルスタック環境の計測結果のみを抽出した．また，外れ値として計測が未完了な項目を1つでも含むデータは除外した．
+計測ログには\cref{tab:loginfo}の情報が含まれており，
+データの計測期間は以下の２パターン (期間(1), 期間(2)) である．
+\begin{description}
+    \item[期間(1)] :  2022 年 10 月 1 日〜 2023 年 5 月 31 日　の約半年\\
+    データ数: 192,398
+    \item[期間(2)] :  2023 年 6 月 1 日 〜 2024 年 6 月 31 日　の約１年\\
+    データ数: 24,611
+\end{description}
+%前者の期間を「期間(1)」とし，後者の期間を「期間(2)」とする．
+これらのログのうち，IPv4/IPv6 デュアルスタック環境における計測結果を分析の対象とした．デュアルスタック環境からの計測の判定はuseridを基に行った．useridは計測ごとにユーザーに割り当てられる．デュアルスタック環境からの計測の場合，IPv4 と IPv6 の計測結果がそれぞれに同じuseridで記録される．シングルスタック環境からの計測の場合は，計測ログ内に同じuseridが存在しないため，それらを除外することでデュアルスタック環境の計測結果のみを抽出した．また，外れ値として計測が未完了な項目を1つでも含むデータは除外した．
 
 %\begin{comment}
 \begin{figure}[htbp]
@@ -19,7 +36,7 @@
     \caption{iNonius スピードテストの計測ログの情報}
     \label{tab:loginfo}
     \begin{center}
-        \begin{tabular}{cc} \hline
+        \begin{tabular}{c|c} \hline
             項目 & 説明 \\ \hline \hline
             userid & ユーザーを識別するID \\
             id & 計測ログを識別するID \\
@@ -59,7 +76,7 @@
     \caption{アクセス環境の分類}
     \label{tab:accesstype}
     \begin{center}
-        \begin{tabular}{cc} \hline
+        \begin{tabular}{c|c} \hline
             アクセス環境の分類 & 詳細な分類 \\ \hline \hline
             \multirow{2}{*}{ISPの網} & IPv4/IPv6で同じ場合 \\
             & IPv4/IPv6で異なる場合 \\
@@ -79,8 +96,8 @@
     \caption{インターネット接続方式の判定とMSSの値}
     \label{tab:mss}
     \begin{center}
-        \begin{tabular}{cccc} \hline
-            \multicolumn{2}{c}{インターネット接続方式}& \multicolumn{2}{c}{MSSのサイズ} \\
+        \begin{tabular}{cc|cc} \hline
+            \multicolumn{2}{c|}{インターネット接続方式}& \multicolumn{2}{c}{MSSのサイズ} \\ \hline
             IPv4& IPv6& IPv4& IPv6 \\ \hline \hline
             IPoE & IPoE & 1460 & 1440 \\
             PPPoE & PPPoE & 1452 & 1394 \\
@@ -94,11 +111,12 @@
 \section{スループットの調査}
 \label{sec:throughput}
 \cref{label:accesstype}で示したアクセス環境の違いによる集計結果を IPv4 と IPv6 のスループットの比較がわかるように\cref{fig:old_isp_dl}のように散布図とヒストグラムのグラフにして分析した．左下が IPv4 と IPv6 のスループットの相関を示す散布図で，左上と右下のヒストグラムがそれぞれ IPv4 と IPv6 のスループットの階級ごとの度数を表す．散布図の縦軸と右下のヒストグラムの縦軸，散布図の横軸と左上のヒストグラムの横軸はそれぞれ同じスケールになっている．
+また，各グラフの右上に，データ数$N$, 相関係数$r$，IPv6/IPv4の平均スループットおよび最大スループットの数値を示す．
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{ISPの網によるスループットへの影響}
 \label{subsec:isp_dl}
-\cref{fig:old_isp_dl,fig:new_isp_dl} はそれぞれの期間のISPの網の違いによるダウンロードのスループットの比較を示す．ただし，ここで言う「ISPの網の違い」とはIPv4とIPv6で同じISPを使用した場合と異なるISPを使用した場合の2つを指す．\cref{fig:old_isp_dl} は(1)の期間の結果で，\cref{fig:new_isp_dl} は(2)の期間の結果である．\cref{old_sameISP_dl,new_sameISP_dl}は同じISPを使用した場合の結果で，\cref{old_diffISP_dl,new_diffISP_dl}は異なるISPを使用した場合の結果である．
+\cref{fig:old_isp_dl,fig:new_isp_dl} はそれぞれの期間のISPの網の違いによるダウンロードのスループットの比較を示す．ただし，ここで言う「ISPの網の違い」とはIPv4とIPv6で同じISPを使用した場合と異なるISPを使用した場合の2つを指す．\cref{fig:old_isp_dl} は{\bf 期間(1)}，\cref{fig:new_isp_dl} は{\bf 期間(2)}の結果である．\cref{old_sameISP_dl,new_sameISP_dl}は同じISPを使用した場合の結果で，\cref{old_diffISP_dl,new_diffISP_dl}は異なるISPを使用した場合の結果である．
 
 \cref{old_sameISP_dl,old_diffISP_dl}を比較するとIPv4/IPv6のスループットの相関性に違いが見られる．これは\cref{fig:new_isp_dl}でも同様である．\cref{fig:old_isp_ul,fig:new_isp_ul}のそれぞれの(a)と(b)を比較すると，ダウンロードに比べて相関係数の値の差が小さいが概ね同様の傾向が見られる．
 (b)の場合は，IPv4/IPv6で異なるISPであることから計測サーバーへの経路が異なる可能性があり，その結果IPv4/IPv6で相関性が低くなると考えられる．
@@ -119,7 +137,7 @@
             \subcaption{異なるISPを使用した場合}
             \label{old_diffISP_dl}
         \end{subfigure}
-        \caption{(1)のダウンロードのスループット}
+        \caption{{\bf 期間(1)}におけるダウンロードのスループット}
         \label{fig:old_isp_dl}
     
         \begin{subfigure}[b]{0.49\textwidth}
@@ -134,7 +152,7 @@
             \subcaption{異なるISPを使用した場合}
             \label{new_diffISP_dl}
         \end{subfigure}
-        \caption{(2)のダウンロードのスループット}
+        \caption{{\bf 期間(2)}におけるダウンロードのスループット}
         \label{fig:new_isp_dl}
     \end{center}
 \end{figure}
@@ -154,7 +172,7 @@
             \subcaption{異なるISPを使用した場合}
             \label{old_diffISP_ul}
         \end{subfigure}
-        \caption{(1)のアップロードのスループット}
+        \caption{{\bf 期間(1)}におけるアップロードのスループット}
         \label{fig:old_isp_ul}
 
         \begin{subfigure}[b]{0.49\textwidth}
@@ -169,7 +187,7 @@
             \subcaption{異なるISPを使用した場合}
             \label{new_diffISP_ul}
         \end{subfigure}
-        \caption{(2)のアップロードのスループット}
+        \caption{{\bf 期間(2)}におけるアップロードのスループット}
         \label{fig:new_isp_ul}
     \end{center}
 \end{figure}
@@ -509,7 +527,7 @@
             \subcaption{異なるISPを使用した場合}
             \label{old_diffISP_rtt}
         \end{subfigure}
-        \caption{(1)のRTT}
+        \caption{{\bf 期間(1)}におけるRTT}
         \label{fig:old_isp_rtt}
     
         \begin{subfigure}[b]{0.49\textwidth}
@@ -524,7 +542,7 @@
             \subcaption{異なるISPを使用した場合}
             \label{new_diffISP_rtt}
         \end{subfigure}
-        \caption{(2)のRTT}
+        \caption{{\bf 期間(2)}におけるRTT}
         \label{fig:new_isp_rtt}
     \end{center}
 \end{figure}
@@ -556,7 +574,7 @@
                     \subcaption{Mobileを使用した場合}
                     \label{old_Mobile_rtt}
                 \end{subfigure}
-            \caption{(1)のRTT}
+            \caption{{\bf 期間(1)}におけるRTT}
             \label{fig:old_Line_rtt}
             \end{center}
         \end{minipage}
@@ -580,7 +598,7 @@
                 \subcaption{Mobileを使用した場合}
                 \label{new_Mobile_rtt}
             \end{subfigure}
-            \caption{(2)のRTT}
+            \caption{{\bf 期間(2)}におけるRTT}
             \label{fig:new_Line_rtt}
         \end{minipage}
     \end{center}
@@ -612,7 +630,7 @@
                 \subcaption{IPv4/IPv6でPPPoEを使用した場合}
                 \label{old_PPPoE_rtt}
             \end{subfigure}
-            \caption{(1)のRTT}
+            \caption{{\bf 期間(1)}におけるRTT}
             \label{fig:old_connect_rtt}
         \end{minipage}
         \hfill
@@ -635,7 +653,7 @@
                 \subcaption{IPv4/IPv6でPPPoEを使用した場合}
                 \label{new_PPPoE_rtt}
             \end{subfigure}
-            \caption{(2)のRTT}
+            \caption{{\bf 期間(2)}におけるRTT}
             \label{fig:new_connect_rtt}
         \end{minipage}
     \end{center}

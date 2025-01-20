@@ -9,7 +9,7 @@
 \usepackage{comment} % コメントアウト用 図が多くてコンパイルに時間がかかるため
 \usepackage{float}
 \usepackage{placeins} % 図の位置を固定する
-
+\usepackage{color}
 % サブキャプションを参照したときに()で囲むコマンド
 \captionsetup[subfigure]{labelformat=simple}
 \renewcommand{\thesubfigure}{(\alph{subfigure})}
@@ -83,11 +83,15 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-ここには，修士論文の概要を書く．（A4 1ページ程度）
+~~~さまざまなデジタルサービスが普及ことによってユーザーがインターネットを利用する機会が増えている．それに伴ってインターネット通信の通信品質が重要になっている．通信品質の悪い状態ではサービスを満足に利用することができないため，通信品質の状態を知ることはユーザーにとって重要である．インターネットの通信品質を調査するためには，Web ベースのスピードテストサイトが利用されることが一般的であり，多くのサイトが運用されている．しかし，このようなサイトで得られた計測結果が，アクセス網の種類やインターネット接続方式などのアクセス環境の内の何によって影響を受けたかを推測することはユーザーにとって難しい．その原因として，アクセス環境による通信品質への影響について情報が提供されていないことが挙げられる．また，この問題はスピードテストサイトの計測ログを使用してインターネットの通信品質についての調査にも影響を与える．多数のユーザーの計測ログを利用するため，様々なアクセス環境が混在したデータを使用することになる．そのうちアクセス環境によって外れ値のような振る舞いをするとき，インターネットの品質とは言い難い．通信品質に影響を与えるアクセス環境とその影響の現れ方を明らかにすることで，通信品質の評価を行うときに考慮するべき要素を示すことができ，ユーザーにとって通信品質の評価が容易になるほか，インターネットの通信品質の分析にも貢献することが期待される．\\
+~~~本研究では，アクセス環境による通信品質の影響を明らかにするために，実際のスピードテストサイトの計測ログを使用して調査を行った．アップロードとダウンロードのスループットとラウンドトリップタイム（RTT）に着目して，アクセス環境による影響を調査し，IPv4 と IPv6 の比較の観点から分析する．さらに，分析の結果を用いて，アクセス環境毎の統計情報をユーザーに示す可視化システムを開発と実装をした．\\
+~~~分析の結果，インターネットサービスプロバイダ（ISP）の違いやアクセス網の種類，IPv4/IPv6のインターネット接続方式の組み合わせの違いによって散布図や平均値などの振る舞いが異なることがわかり，アクセス環境による通信品質への影響を示した．また，可視化システムを利用したユーザーに実施したアンケートでは，アクセス環境毎の統計情報を可視化することに対する肯定的な意見を得ることができた．
 \end{abstract}
 
 \begin{eabstract}
-Write abstract of your thesis here within a page in A4 size.
+~~~The proliferation of various digital services has increased opportunities for users to utilize the internet. Consequently, the quality of Internet communication has become a critical factor. Poor communication quality prevents users from fully enjoying services, making it essential for them to understand the state of communication quality. Web-based speed test sites are commonly used to evaluate internet communication quality, and many such sites are operational. However, it is difficult for users to infer which aspects of their access environment—such as the type of access network or Internet connection method—affect the measurement results obtained from these sites.\\
+~~~One reason for this difficulty is the lack of information provided about the impact of access environments on communication quality. This issue also affects research on Internet communication quality that uses measurement logs from speed test sites. Since measurement logs from numerous users are utilized, data containing diverse access environments are inevitably included. If access environments result in outlier-like behavior, these data points cannot be considered representative of Internet quality. By identifying the factors in the access environment that affect communication quality and how they manifest, it is possible to highlight elements that should be considered when evaluating communication quality. This can make quality assessments easier for users and contribute to a more accurate analysis of internet communication quality.\\
+~~~In this study, we investigated the impact of access environments on communication quality by analyzing actual measurement logs from a speed test site. We focused on upload and download throughput as well as round-trip time to examine the influence of access environments and analyzed the results from the perspective of comparing IPv4 and IPv6. Additionally, we developed and implemented a visualization system that presents statistical information for each access environment based on the analysis results.
 \end{eabstract}
 
 
@@ -99,9 +103,19 @@ Write abstract of your thesis here within a page in A4 size.
 \chapter{序論}
 \section{背景と目的}
 近年，テレワークやオンライン会議といったリモートワークの増加\cite{telwork}や，GIGAスクール構想の実現などにデジタルサービスの普及によってインターネットを使用する機会が増えている．文部科学省が主導して行われた学校現場での通信品質の調査\cite{giga}では，全国の公立小・中・高等学校における実行速度を収集して現状の把握を目的とした調査が行われるなど，インターネットの通信品質を知ることはネットワーク管理者やユーザーにとって重要になっている．ユーザーがネットワーク通信品質を調べるために，一般に Web ベースのスピードテストサイトが用いられる．このようなサイトは多数運用されており，計測結果を統計情報の掲載やインターネットの通信品質の分析などに活用されている．しかし，アクセス網の種類やインターネット接続方式などのアクセス環境が通信品質にどのように影響を与えるかについては，詳細な情報が提供されていない．そのため，スピードテストサイトで得られた計測結果が，アクセス環境のどこで影響を受けたかを切り分けることがユーザーにとって難しい．
-本研究では，アクセス環境による通信品質の影響を明らかにするために，アップロードとダウンロードのスループットとラウンドトリップタイム（RTT）に着目して，アクセス環境による影響を調査し，IPv4 と IPv6 の比較の観点から分析する．それにより，アクセス環境の違いによる分析の意義を示す．
-また，通信品質の違いを可視化するシステムを開発を行う．スピードテストサイトの計測結果を他のユーザーと比較できるようにするだけでなく，同じアクセス環境からの計測結果と比較することで，アクセス環境による通信品質の違いをユーザーに直感的に理解できるようにする．アクセス環境による通信品質の違いをユーザーに直感的に理解できるようにする．
+
+本研究では，アクセス環境が通信品質に与える影響を明らかにすることを目的として，
+アップロードおよびダウンロードのスループット，ならびにラウンドトリップタイム（RTT）に着目した調査を実施する．
+また，通信プロトコルとしてIPv4とIPv6を比較し，それぞれの特徴を分析することで，アクセス環境の違いが通信品質に及ぼす影響について包括的な検討を行う．
+また，通信品質の違いを可視化するシステムの開発を行う．
+スピードテストサイトの計測結果を他のユーザーと比較できるようにするだけでなく，同じアクセス環境からの計測結果と比較することで，アクセス環境による通信品質の違いをユーザーに直感的に理解できるように設計する．
+アクセス環境による通信品質の違いをユーザーに直感的に理解できるようにする．
 最終的に，本研究の成果は，ネットワーク運用者やエンドユーザーにアクセス環境による通信品質への影響を示すことを目指す．
+
+%本研究では，アクセス環境による通信品質の影響を明らかにするために，アップロードとダウンロードのスループットとラウンドトリップタイム（RTT）に着目して，アクセス環境による影響を調査し，IPv4 と IPv6 を比較しながら分析する．%それにより，アクセス環境の違いによる分析の意義を示す．
+%また，通信品質の違いを可視化するシステムの開発を行う．
+%スピードテストサイトの計測結果を他のユーザーと比較できるようにするだけでなく，同じアクセス環境からの計測結果と比較することで，アクセス環境による通信品質の違いをユーザーに直感的に理解できるようにする．アクセス環境による通信品質の違いをユーザーに直感的に理解できるようにする．
+%最終的に，本研究の成果は，ネットワーク運用者やエンドユーザーにアクセス環境による通信品質への影響を示すことを目指す．
 
 \section{本論文の構成}
 本論文は以下のように構成する．\cref{chap:relatedwork}で関連研究について述べ，\cref{chap:access}でアクセス環境による通信品質への影響を調査する．\cref{chap:system}では，アクセス環境による通信品質の違いを可視化するシステムの設計と実装について述べる．最後に\cref{chap:conclusion}で全体のまとめと今後の課題について述べる．
@@ -126,7 +140,8 @@ Write abstract of your thesis here within a page in A4 size.
 
 
 \begin{acknowledgment}
-本研究にあたり，ご指導を頂きました，本学大学院情報科学研究科 前田香織特任教授，高野知佐教授，稲村勝樹准教授に深甚なる謝意を表します．また，多くの助言をいただいた東京科学大学学術国際情報センター 北口善明准教授他 iNonius プロジェクトの皆様に感謝いたします．そして，研究に協力いただきました広島市立大学ネットワーク科学研究室の各位に心より感謝いたします．
+本研究にあたり，ご指導を頂きました，本学大学院情報科学研究科 前田香織特任教授，高野知佐教授，稲村勝樹准教授に深甚なる謝意を表します．また，多くの助言をいただいた東京科学大学学術国際情報センター 北口善明准教授他 iNonius プロジェクトの皆様に感謝いたします．そして，研究に協力いただきました本学情報科学研究科ネットワーク科学研究グループの皆様に感謝致します．
+
 \end{acknowledgment}
 
 \input{bibitem.tex}
